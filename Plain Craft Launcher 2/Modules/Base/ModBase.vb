@@ -6,12 +6,13 @@ Public Module ModBase
 #Region "声明"
 
     '下列版本信息由更新器自动修改
-    Public Const VersionBaseName As String = "2.14.0.0" '显示用版本名
+    Public Const VersionBaseName As String = "1.0" '对外显示版本名
     Public Const CommitHash As String = "" 'Commit Hash，由 GitHub Workflow 自动替换
+    '注意：VersionCode 是内部构建号，参与升级/降级迁移逻辑，不要跟着显示版本一起改小。
 #If RELEASE Then
-    Public Const VersionCode As Integer = 411 '正式版
+    Public Const VersionCode As Integer = 411 '正式版内部构建号（沿用 PCL 2.14.0.0）
 #Else
-    Public Const VersionCode As Integer = 412 '快照版
+    Public Const VersionCode As Integer = 412 '快照版内部构建号（沿用 PCL 2.14.0.0）
 #End If
 
     '版本信息

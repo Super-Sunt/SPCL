@@ -722,7 +722,7 @@ git commit -m "chore: isolate SPCL paths and remove open-source startup notice"
 - Create: `README-SPCL.txt`（提交到仓库，再复制进分发目录）
 - Create: `dist\SPCL\README.txt`（从 `README-SPCL.txt` 复制）
 - Create: `dist\SPCL\LICENCE`（复制根目录文件）
-- Create: `dist\SPCL-2.14.0.0-win64.zip`
+- Create: `dist\SPCL-1.0-win64.zip`
 
 - [ ] **Step 6.1: 干净构建 Release**
 
@@ -787,9 +787,9 @@ Copy-Item "README-SPCL.txt" "dist\SPCL\README.txt" -Force
 - [ ] **Step 6.4: 打包**
 
 ```powershell
-Compress-Archive -Path "dist\SPCL\*" -DestinationPath "dist\SPCL-2.14.0.0-win64.zip" -Force
+Compress-Archive -Path "dist\SPCL\*" -DestinationPath "dist\SPCL-1.0-win64.zip" -Force
 Get-ChildItem dist\SPCL | Select-Object Name, Length
-Get-Item dist\SPCL-2.14.0.0-win64.zip | Select-Object FullName, Length
+Get-Item dist\SPCL-1.0-win64.zip | Select-Object FullName, Length
 ```
 
 Expected: zip 内包含 `Plain Craft Launcher 2.exe`、`LICENCE`、`README.txt`。
