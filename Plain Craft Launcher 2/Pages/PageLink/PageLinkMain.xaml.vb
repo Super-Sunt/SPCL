@@ -109,7 +109,7 @@ Public Class PageLinkMain
             Next
             Return Result.Replace("O", "0").Replace("I", "1")
         End Function
-        NetworkName = $"P{ServerPort.ConvertRadix(16).PadLeft(4, "0"c)}-{GenerateRandomCode()}"
+        NetworkName = $"S{ServerPort.ConvertRadix(16).PadLeft(4, "0"c)}-{GenerateRandomCode()}"
         NetworkSecret = GenerateRandomCode()
         DiscoverNodeID = -1
         Logger.Info($"尝试创建房间，网络名 {NetworkName}，网络密码 {NetworkSecret}，端口 {ServerPort}")
@@ -158,13 +158,15 @@ Public Class PageLinkMain
         If Code Is Nothing Then Return "邀请码为空！"
         Code = FixCodeFormat(Code)
         '判断类型
-        If Not (Code.Length >= 14 AndAlso Code(0) = "P"c AndAlso Code(5) = "-"c AndAlso Code(11) = "-"c) Then
-            If Code.StartsWithF("U/") Then 'HMCL
-                Return "请让房主使用 PCL 创建房间！"
+        If Not (Code.Length >= 14 AndAlso Code(0) = "S"c AndAlso Code(5) = "-"c AndAlso Code(11) = "-"c) Then
+            If Code.Length >= 6 AndAlso Code(0) = "P"c Then
+                Return "这是官方 PCL 的房间邀请码。本版本的联机使用自建中继，无法加入官方房间。"
+            ElseIf Code.StartsWithF("U/") Then 'HMCL
+                Return "请让房主使用 SPCL 创建房间！"
             ElseIf Code.Length = 10 Then 'PCL CE
                 Return "请让房主使用非社区版的 PCL 创建房间！"
             Else
-                Return "邀请码有误，请让房主使用 PCL 创建房间！"
+                Return "邀请码有误，请让房主使用 SPCL 创建房间！"
             End If
         End If
         '校验版本
@@ -423,19 +425,15 @@ Public Class PageLinkMain
         New LoaderTask(Of Integer, Integer)("启动联机模块", AddressOf InitLaunch) With {.ProgressWeight = 50}
     })
 
-    '1. 获取服务器配置
+    '1. 获取本地联机配置
     Private Sub InitConfig(Task As LoaderTask(Of Integer, Integer))
-        UpdateLoadingPage("正在联网获取配置……", "联网获取配置")
-        If VersionBranchMain <> "Official" Then
-            Throw New Exception($"$开源版无法联网获取配置。{vbCrLf}你可以在 PCL 官方版的缓存文件夹下查看 ServerConfig 的当前内容， 并在代码中进行相应修改。")
+        UpdateLoadingPage("正在准备联机……", "准备联机")
+        If String.IsNullOrWhiteSpace(ModLinkConfig.GetRelayPeers()) Then
+            Throw New Exception($"$还没有配置联机中继服务器。{vbCrLf}" &
+                                $"请打开 设置 → 联机 → 中继服务器，填写你自己搭建的 EasyTier 中继地址，例如：{vbCrLf}" &
+                                $"tcp://1.2.3.4:11010")
         End If
-        ServerLoader.WaitForExit(LoaderToSyncProgress:=Task)
-        If ServerConfig Is Nothing Then Throw New Exception("无法从服务器获取配置")
-        '检查是否已禁用联机功能
-        Dim DisableReason = ServerConfig("Link")?("DisableReason2")?.ToString
-        If Not String.IsNullOrEmpty(DisableReason) Then Throw New Exception("$" & DisableReason) 'TODO: 可能不会显示错误原因？
-        If CType(ServerConfig("Link"), JObject).ContainsKey("MinVersionCode") AndAlso
-           VersionCode < ServerConfig("Link")("MinVersionCode").ToObject(Of Integer) Then
+        If VersionCode < ModLinkConfig.MinVersionCode Then
             Throw New Exception("$你的 SPCL 版本太老了，请在更新 SPCL 之后再联机！")
         End If
     End Sub
@@ -466,12 +464,22 @@ Public Class PageLinkMain
             Settings.Set("LinkEasyTierVersion", -1)
         End If
         Dim LocalVersion As Integer = Settings.Get(Of Integer)("LinkEasyTierVersion")
-        ServerVersion = ServerConfig("Link")("EasyTierVersion")
+        ServerVersion = ModLinkConfig.EasyTierVersion
         Dim RequiredFiles As New List(Of NetFile)
         Logger.Info($"EasyTier 本地版本：{LocalVersion}，需求版本：{ServerVersion}")
+        '优先使用发布包内置的联机模块
+        Dim Bundled As String = ModLinkConfig.BundledModuleFolder
+        If Bundled IsNot Nothing AndAlso LocalVersion < ServerVersion Then
+            UpdateLoadingPage("正在安装内置联机模块……", "安装联机模块")
+            Directory.CreateDirectory(PathEasyTier)
+            DirectoryUtils.Copy(Bundled, PathEasyTier)
+            Settings.Set("LinkEasyTierVersion", ServerVersion)
+            LocalVersion = ServerVersion
+        End If
+        '内置模块不可用或过旧时才下载
         If LocalVersion < ServerVersion Then
             RequiredFiles.Add(New NetFile(
-                ServerConfig("Link")("Downloads").Select(Function(UrlEntry) UrlEntry.ToString.Replace("{arch}", Architecture)),
+                ModLinkConfig.FallbackDownloads.Select(Function(UrlEntry) UrlEntry.ToString.Replace("{arch}", Architecture)),
                 PathEasyTier & "EasyTier.zip",
                 New FileChecker With {.MinSize = 1024 * 1024 * 2}))
         End If
@@ -501,18 +509,13 @@ Public Class PageLinkMain
         '获取节点列表
         UpdateLoadingPage("正在获取节点列表……", "获取节点列表")
         Dim RawPeers As List(Of String)
-        Dim CustomPeers As String = Settings.Get(Of String)("LinkCustomPeer")
+        Dim CustomPeers As String = ModLinkConfig.GetRelayPeers()
         If String.IsNullOrWhiteSpace(CustomPeers) Then
-            If DiscoverNodeID = -2 AndAlso Not IsServerSide Then
-                Panic("未填写自定义节点设置", $"$你必须在 {vbLQ}自定义节点{vbRQ} 设置中填写与房主相同的内容，{vbCrLf}才能进入该房间！")
-                Return
-            End If
-            RawPeers = GetTargetPeers()
-        Else
-            If DiscoverNodeID <> -2 AndAlso Not IsServerSide Then Hint("房主可能没有使用自定义节点设置，请确认你们的自定义节点设置是否一致！")
-            RawPeers = CustomPeers.Split("，,".ToCharArray).Select(Function(p) p.Trim).Where(Function(p) Not String.IsNullOrEmpty(p)).ToList()
-            Logger.Info($"使用自定义节点：{CustomPeers}")
+            Panic("未配置联机中继", $"$请先在 设置 → 联机 → 中继服务器 中填写 EasyTier 中继地址。{vbCrLf}例如：tcp://1.2.3.4:11010")
+            Return
         End If
+        RawPeers = CustomPeers.Split("，,".ToCharArray).Select(Function(p) p.Trim).Where(Function(p) Not String.IsNullOrEmpty(p)).ToList()
+        Logger.Info($"使用中继节点：{CustomPeers}")
         Task.Progress = 0.13
         '获取空闲端口
         UpdateLoadingPage("正在启动联机模块……", "启动联机模块")
@@ -521,7 +524,7 @@ Public Class PageLinkMain
         RPCPort = FreePorts(1)
         Dim ListenersPort As Integer = FreePorts(2) '它会占用【当前、当前 +1、当前 +2】共三个端口
         '获取启动参数
-        Dim Arguments As String = ServerConfig("Link")("Argument")
+        Dim Arguments As String = ModLinkConfig.BaseArguments
         Arguments += $" --network-name={NetworkName} --network-secret={NetworkSecret} --listeners {ListenersPort} --rpc-portal {RPCPort} --private-mode true"
         Dim HostName = If(IsServerSide, "Server-", "Client-") & Identify.GetStableHashCode().ConvertRadix(36).TrimStart("-"c).EnsureLength("0", 6)
         If IsServerSide Then
@@ -598,99 +601,11 @@ Public Class PageLinkMain
         Next
     End Sub
     ''' <summary>
-    ''' 从在线配置和 API 获取需要连接的节点列表，并更新发现节点 ID。
-    ''' 根据发现节点 ID，会有以下行为变化：
-    '''   -1：作为房主，根据负载均衡选择一个发现节点。
-    '''   0：作为加入者，但邀请码未提供发现节点 ID，使用回退发现节点。
-    '''   >0：作为加入者，根据 ID 选择对应的发现节点；如果没有，使用回退发现节点。
+    ''' 获取需要连接的节点列表。当前只使用设置中的中继服务器。
     ''' </summary>
     Private Function GetTargetPeers() As List(Of String)
-        Dim FinalPeers As New List(Of String), FinalDiscoverID As Integer = -1
-        Dim FallbackDiscoverID = ServerConfig("Link")("DiscoverPeerId").ToObject(Of Integer)
-        Dim FallbackDiscoverAddress As String = ServerConfig("Link")("DiscoverPeer").ToString()
-        Try
-            '从 API 获取节点列表
-            Dim RawNodes As JObject
-            Dim IsFallbackRawList As Boolean = False
-            Try
-                RawNodes = NetRequestByClient("https://uptime.easytier.cn/api/nodes?page=1&per_page=1000", RequireJson:=True).DeserializeJson()
-            Catch exx As Exception
-                Logger.Warn(exx, "从源站获取节点列表失败，将使用 CDN 缓存")
-                RawNodes = NetRequestByClientRetry("https://easytier.meloong.com/?page=1&per_page=1000", RequireJson:=True).DeserializeJson()
-                IsFallbackRawList = True
-            End Try
-            '分析节点列表
-            Dim Nodes As New List(Of JObject) '负载会添加在 load 字段上
-            Dim BlackList As List(Of String) = ServerConfig("Link")("PeersBlackList").Select(Function(p) p.ToString).ToList()
-            For Each Node As JObject In RawNodes("data")("items")
-                '状态检查
-                Dim ID = Node("id").ToObject(Of Integer)
-                If Not Node("is_active").ToObject(Of Boolean) OrElse Not Node("is_approved").ToObject(Of Boolean) Then Continue For
-                If ID = DiscoverNodeID Then GoTo ForcedPass '若为指定的发现节点，忽略后续检查
-                If ID = FallbackDiscoverID Then Continue For '不主动选取回退发现节点
-                If BlackList.Contains(Node("address").ToString) Then Continue For 'ServerConfig 黑名单
-                If Node("usage_percentage").ToObject(Of Double) = 0 AndAlso RandomInteger(1, 100) <> 1 Then Continue For '或许节点有问题才导致是 0 负载，让它只有 1% 概率被选中
-                '标签检查
-                Dim Tags = Node("tags").Select(Function(t) t.ToString).ToList
-                If Not Tags.Contains("国内") OrElse Not Tags.Contains("MC中继") Then Continue For
-                '计算负载并加入列表
-ForcedPass:
-                Dim Load As Double = Node("usage_percentage").ToObject(Of Double) '负载
-                Load *= 110 - Node("health_percentage_24h").ToObject(Of Double) '可用率
-                Node("load") = Load
-                Nodes.Add(Node)
-            Next
-            '排序
-            If Not IsFallbackRawList Then
-                Nodes = Nodes.OrderBy(Function(n) n("load").ToObject(Of Double)).ToList() '按负载从低到高排序
-            Else
-                Nodes = Nodes.Shuffle().ToList() '回退到 CDN 缓存时，由于负载数据可能过期，直接随机选择
-            End If
-            '选取发现节点
-            Dim SelectedDiscoverNode As JObject = Nothing
-            If DiscoverNodeID = -1 Then '-1：作为房主，根据负载均衡选择一个发现节点
-                SelectedDiscoverNode = Nodes.FirstOrDefault(Function(n) Not n("allow_relay").ToObject(Of Boolean))
-            ElseIf DiscoverNodeID > 0 Then '>0：作为加入者，根据 ID 选择对应的发现节点；如果没有，使用回退发现节点
-                SelectedDiscoverNode = Nodes.FirstOrDefault(Function(n) n("id").ToObject(Of Integer) = DiscoverNodeID)
-                If SelectedDiscoverNode Is Nothing Then
-                    Logger.Warn($"未找到 ID {DiscoverNodeID} 的发现节点")
-                    Panic("房间已过期", "请让房主重新创建房间！")
-                    Throw New OperationCanceledException
-                End If
-            End If
-            If SelectedDiscoverNode Is Nothing Then '使用回退发现节点
-                SelectedDiscoverNode = New JObject From {{"address", FallbackDiscoverAddress}, {"id", FallbackDiscoverID}}
-                Logger.Warn("将使用回退发现节点")
-            End If
-            FinalPeers.Add(SelectedDiscoverNode("address").ToString())
-            FinalDiscoverID = SelectedDiscoverNode("id").ToObject(Of Integer)
-            Logger.Info($"发现节点：{SelectedDiscoverNode("address")} (ID: {FinalDiscoverID})")
-            '选取中继节点
-            If ModeDebug OrElse Not IsServerSide Then '房主只连接发现节点，不连接中继节点
-                Dim RelayCount As Integer = ServerConfig("Link")("RandomPeer").ToObject(Of Integer)
-                Dim RelayNodes = Nodes.Where(Function(n) n("allow_relay").ToObject(Of Boolean)).ToList()
-                If RelayNodes.Count < RelayCount Then Throw New Exception($"可用的中继节点数量不足，需要 {RelayCount} 个，实际 {RelayNodes.Count} 个")
-                FinalPeers.AddRange(RelayNodes.Take(RelayCount).Select(Function(n) n("address").ToString()))
-            End If
-        Catch ex As Exception
-            ex.ThrowIfCanceled()
-            Logger.Error(ex, "获取节点列表失败，联机质量可能受到影响", LogBehavior.Toast)
-            FinalPeers.AddRange(ServerConfig("Link")("Peers").Select(Function(p) p.ToString))
-            If FinalDiscoverID <= 0 Then
-                FinalPeers.Add(FallbackDiscoverAddress)
-                FinalDiscoverID = FallbackDiscoverID
-            End If
-        End Try
-        '版本 1 兼容
-        If CType(ServerConfig("Link"), JObject).ContainsKey("EnableForcedPeer") Then
-            FinalPeers.Add("tcp://mc1.easytier.cn:55558")
-            If FinalDiscoverID <= 0 Then FinalDiscoverID = 94
-        End If
-        '强制添加的节点
-        FinalPeers.AddRange(ServerConfig("Link")("MandatoryPeers").Select(Function(p) p.ToString))
-        '结束
-        DiscoverNodeID = FinalDiscoverID
-        Return FinalPeers.Distinct.ToList
+        Dim Raw As String = ModLinkConfig.GetRelayPeers()
+        Return Raw.Split("，,".ToCharArray).Select(Function(p) p.Trim).Where(Function(p) Not String.IsNullOrEmpty(p)).Distinct.ToList
     End Function
 
 #End Region

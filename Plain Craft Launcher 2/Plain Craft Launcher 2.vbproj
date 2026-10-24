@@ -332,6 +332,7 @@
     <Compile Include="Modules\Base\ModLoader.vb" />
     <Compile Include="Modules\Base\ModNet.vb" />
     <Compile Include="Modules\Base\ModValidate.vb" />
+    <Compile Include="Modules\Base\ModLinkConfig.vb" />
     <Compile Include="Modules\Minecraft\ModDownload.vb" />
     <Compile Include="Modules\Minecraft\ModLaunch.vb" />
     <Compile Include="Modules\Minecraft\ModMinecraft.vb" />
