@@ -994,11 +994,11 @@ Retry:
                             "该账号目前填写的年龄是否在 13 岁以上？", "登录提示", "13 岁以上", "12 岁以下", "我不知道") = 1 Then
                     OpenWebsite("https://account.live.com/editprof.aspx")
                     MyMsgBox("请在打开的网页中修改账号的出生日期（至少改为 18 岁以上）。" & vbCrLf &
-                             "在修改成功后等待一分钟，然后再回到 PCL，就可以正常登录了！", "登录提示")
+                             "在修改成功后等待一分钟，然后再回到 SPCL，就可以正常登录了！", "登录提示")
                 Else
                     OpenWebsite("https://support.microsoft.com/zh-cn/account-billing/如何更改-microsoft-帐户上的出生日期-837badbc-999e-54d2-2617-d19206b9540a")
                     MyMsgBox("请根据打开的网页的说明，修改账号的出生日期（至少改为 18 岁以上）。" & vbCrLf &
-                             "在修改成功后等待一分钟，然后再回到 PCL，就可以正常登录了！", "登录提示")
+                             "在修改成功后等待一分钟，然后再回到 SPCL，就可以正常登录了！", "登录提示")
                 End If
                 Throw New OperationCanceledException
             Else
@@ -1030,7 +1030,7 @@ Retry:
                 Throw New Exception("$当前 IP 的登录尝试异常。" & vbCrLf & "如果你使用了 VPN 或加速器，请把它们关掉或更换节点后再试！")
             ElseIf ex.StatusCode = HttpStatusCode.ServiceUnavailable Then
                 Logger.Warn(ex, "微软登录第 4 步汇报 503")
-                Throw New Exception("$Mojang 服务器出现问题，请稍后再试。" & vbCrLf & "你的网络是正常的，PCL 也是正常的，是 Mojang 出问题了……")
+                Throw New Exception("$Mojang 服务器出现问题，请稍后再试。" & vbCrLf & "你的网络是正常的，SPCL 也是正常的，是 Mojang 出问题了……")
             ElseIf ex.Response?.Contains("ACCOUNT_SUSPENDED") Then '#8655
                 MyMsgBox("该账号似乎已被微软封禁，无法登录。", "登录失败", "我知道了", IsWarn:=True)
                 Throw New OperationCanceledException
@@ -1510,7 +1510,7 @@ NextInstance:
         Yield ("${library_directory}", PathUtils.ToShortPath(McFolderSelected & "libraries"))
         Yield ("${libraries_directory}", PathUtils.ToShortPath(McFolderSelected & "libraries"))
         Yield ("${pure_directory}", PathUtils.RemoveSlashSuffix(PathPure.Value)) '由 PCL 添加，这会允许在分割参数并去重后再替换路径，防止路径中的特殊字符影响参数分割和去重
-        Yield ("${launcher_name}", "PCL")
+        Yield ("${launcher_name}", "SPCL")
         Yield ("${launcher_version}", VersionCode)
         Yield ("${version_name}", McInstanceSelected.Name)
         Yield ("${game_directory}", PathUtils.ToShortPath(Left(McInstanceSelected.PathIndie, McInstanceSelected.PathIndie.Count - 1)))
@@ -1751,10 +1751,10 @@ NextInstance:
                 If WindowsUtils.HasAdminRole() Then
                     Logger.Warn(ex, "直接调整显卡设置失败")
                 Else
-                    Logger.Warn(ex, "直接调整显卡设置失败，将以管理员权限重启 PCL 再次尝试")
+                    Logger.Warn(ex, "直接调整显卡设置失败，将以管理员权限重启 SPCL 再次尝试")
                     Try
                         If RunAsAdmin($"--gpu ""{McLaunchJavaSelected.JavaExePath}""") = ProcessReturnValues.TaskDone Then
-                            McLaunchLog("以管理员权限重启 PCL 并调整显卡设置成功")
+                            McLaunchLog("以管理员权限重启 SPCL 并调整显卡设置成功")
                         Else
                             Throw New Exception("调整过程中出现异常")
                         End If
@@ -1927,7 +1927,7 @@ NextInstance:
                 '准备文件
                 Dim Bit As New MyBitmap(PathImage & "Heads/Logo.png")
                 Bit.Save(PackPicAddress)
-                FileUtils.Write(MetaFileAddress, "{""pack"":{""pack_format"":" & PackVersion & ",""description"":""PCL 自定义离线皮肤资源包""}}")
+                FileUtils.Write(MetaFileAddress, "{""pack"":{""pack_format"":" & PackVersion & ",""description"":""SPCL 自定义离线皮肤资源包""}}")
                 Dim Skin As New MyBitmap(Paths.AppDataThenName & "CustomSkin.png")
                 If (McInstanceSelected.Version.Vanilla.Major = 6 OrElse McInstanceSelected.Version.Vanilla.Major = 7) AndAlso Skin.Pic.Height = 64 Then
                     McLaunchLog("该 Minecraft 版本不支持双层皮肤，已进行裁剪")

@@ -90,7 +90,7 @@
                             <local:MyRadioBox local:SettingService.Key="UiLauncherTheme" local:SettingService.Value="14" 
                                               Grid.Column="5" Grid.Row="2" Text="自定义" x:Name="RadioLauncherTheme14" IsEnabled="False" ToolTip="需要解锁五个隐藏主题" ToolTipService.ShowOnDisabled="True" />
                         </Grid>
-                        <local:MyCheckBox local:SettingService.Key="UiLauncherLogo" Text="打开启动器时显示 PCL 图标" Margin="-1,0,0,1" Height="22" />
+                        <local:MyCheckBox local:SettingService.Key="UiLauncherLogo" Text="打开启动器时显示 SPCL 图标" Margin="-1,0,0,1" Height="22" />
                     </StackPanel>
                     <Border Background="#DDDDDDDD" Margin="-8,23,-5,28" CornerRadius="4" Name="PanLauncherHide" Visibility="Collapsed">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -140,7 +140,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="背景模糊" Margin="0,0,25,0" />
                         <local:MySlider local:SettingService.Key="UiBackgroundBlur" x:Name="SliderBackgroundBlur" MaxValue="40" Grid.Column="1" 
-                                        ToolTip="高度的模糊会严重掉帧，请谨慎。&#13;不建议在制作整合包时开启模糊，以确保 PCL 在低性能电脑上可以流畅运行。" />
+                                        ToolTip="高度的模糊会严重掉帧，请谨慎。&#13;不建议在制作整合包时开启模糊，以确保 SPCL 在低性能电脑上可以流畅运行。" />
                     </Grid>
                     <local:MyCheckBox local:SettingService.Key="UiBackgroundColorful" Text="叠加彩色背景" Margin="-1,0,0,8" Height="22" />
                     <Grid Height="35" Margin="0,2,0,0">
@@ -149,7 +149,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
                         </Grid.ColumnDefinitions>
-                        <local:MyButton x:Name="BtnBackgroundOpen" MinWidth="140" Text="打开文件夹" Padding="13,0" Margin="0,0,20,0" ToolTip="将背景图片放到该文件夹，PCL 将会在每次打开时随机加载其中的一张图片"/>
+                        <local:MyButton x:Name="BtnBackgroundOpen" MinWidth="140" Text="打开文件夹" Padding="13,0" Margin="0,0,20,0" ToolTip="将背景图片放到该文件夹，SPCL 将会在每次打开时随机加载其中的一张图片"/>
                         <local:MyButton x:Name="BtnBackgroundRefresh" MinWidth="140" Text="刷新背景图片" Padding="13,0" Margin="0,0,20,0" ToolTip="随机加载文件夹内的一张背景图片" Grid.Column="1"/>
                         <local:MyButton x:Name="BtnBackgroundClear" MinWidth="140" Text="清空背景图片" Visibility="Collapsed" Padding="13,0" Margin="0,0,20,0" ColorType="Red" Grid.Column="2"/>
                     </Grid>
@@ -177,7 +177,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
                         </Grid.ColumnDefinitions>
-                        <local:MyButton x:Name="BtnMusicOpen" Text="打开文件夹" MinWidth="140" Padding="13,0" Margin="0,0,20,0" ToolTip="将背景音乐放到该文件夹，PCL 将会播放其中的所有音乐"/>
+                        <local:MyButton x:Name="BtnMusicOpen" Text="打开文件夹" MinWidth="140" Padding="13,0" Margin="0,0,20,0" ToolTip="将背景音乐放到该文件夹，SPCL 将会播放其中的所有音乐"/>
                         <local:MyButton x:Name="BtnMusicRefresh" Text="刷新背景音乐" MinWidth="140" Padding="13,0" Margin="0,0,20,0" ToolTip="刷新播放列表，并播放列表中的音乐" Grid.Column="1"/>
                         <local:MyButton x:Name="BtnMusicClear" Text="清空背景音乐" MinWidth="140" Visibility="Collapsed" Padding="13,0" Margin="0,0,20,0" ColorType="Red" Grid.Column="2"/>
                     </Grid>

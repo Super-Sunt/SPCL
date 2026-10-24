@@ -262,8 +262,8 @@
                         <local:MyCheckBox x:Name="CheckOptionsPcl">
                             <local:MyCheckBox.Tag>
                                 <local:ExportOption 
-                                Title="PCL 启动器程序"
-                                Description="打包正式版 PCL，以便没有启动器的玩家安装整合包"
+                                Title="SPCL 启动器程序"
+                                Description="打包正式版 SPCL，以便没有启动器的玩家安装整合包"
                                 DefaultChecked="True" />
                             </local:MyCheckBox.Tag>
                         </local:MyCheckBox>
@@ -272,7 +272,7 @@
                             <local:MyCheckBox x:Name="CheckOptionsPclCustom">
                                 <local:MyCheckBox.Tag>
                                     <local:ExportOption 
-                                Title="PCL 个性化内容"
+                                Title="SPCL 个性化内容"
                                 Description="功能隐藏设置、主页、背景音乐和图片等"
                                 DefaultChecked="True" />
                                 </local:MyCheckBox.Tag>
@@ -289,7 +289,7 @@
                         <local:MyCheckBox Text="仅从 Modrinth 下载资源文件" x:Name="CheckAdvancedModrinth"
                                           ToolTip="若资源未在 Modrinth 上托管，则将其原始文件直接放入整合包中。&#xa;如果你想将整合包上传到 Modrinth，这能帮助你分辨哪些文件未在 Modrinth 上托管。" />
                         <local:MyHint Theme="Yellow" x:Name="HintModrinthFormat" Margin="26,2,0,2"
-                                      Text="若不勾选 “PCL 启动器程序”，导出时才能在 “保存类型” 中选择 .mrpack 格式！" />
+                                      Text="若不勾选 “SPCL 启动器程序”，导出时才能在 “保存类型” 中选择 .mrpack 格式！" />
                         <local:MyHint Theme="Blue" RelativeSetup="HintExportConfig" CanClose="True" Margin="0,20,0,2"
                                       Text="配置文件中含有更多高级选项，例如精准控制导出的文件、设置整合包存放位置等。&#xa;要修改这些选项，请先点击 “保存配置”，在编辑配置文件后再导入。" />
                         <Grid Height="35" Margin="0,12,0,0">

@@ -135,7 +135,7 @@
                         <local:MyComboBoxItem Content="关闭所有公告" />
                     </local:MyComboBox>
                     <TextBlock Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Text="缓存文件夹" Margin="0,0,25,0" />
-                    <local:MyTextBox x:Name="TextSystemCache" Grid.Row="4" Grid.ColumnSpan="2" local:SettingService.Key="SystemSystemCache" Grid.Column="1" ToolTip="PCL 的下载、皮肤等缓存文件的存储位置。&#xa;不推荐路径中带有空格。&#xa;留空即为默认值，重启 PCL 后生效。" HintText="默认">
+                    <local:MyTextBox x:Name="TextSystemCache" Grid.Row="4" Grid.ColumnSpan="2" local:SettingService.Key="SystemSystemCache" Grid.Column="1" ToolTip="SPCL 的下载、皮肤等缓存文件的存储位置。&#xa;不推荐路径中带有空格。&#xa;留空即为默认值，重启 SPCL 后生效。" HintText="默认">
                         <local:MyTextBox.ValidateRules>
                             <local:ValidateNullable />
                             <local:ValidateFolderPath UseMinecraftCharCheck="False" />
@@ -143,7 +143,7 @@
                     </local:MyTextBox>
                     <local:MyCheckBox Margin="0,5,0,4" Text="匿名数据收集" Grid.Row="6" Height="22" Grid.ColumnSpan="2"
                         x:Name="CheckSystemTelemetry" local:SettingService.Key="SystemSystemTelemetry" 
-                        ToolTip="当下载失败、PCL 出错、游戏崩溃等事件时，PCL 会匿名上报情况，以通知龙猫 “哦吼，出错了”，让龙猫能更好地修 Bug……&#xa;你可以关闭上报，不过龙猫就不知道你遇到了什么 Bug 了……&#13;PCL 不会上传或收集任何个人信息，包括上报的东西里面也没有！&#xa;详情：https://github.com/Meloong-Git/PCL/discussions/7036" />
+                        ToolTip="当下载失败、SPCL 出错、游戏崩溃等事件时，SPCL 会匿名上报情况，以通知龙猫 “哦吼，出错了”，让龙猫能更好地修 Bug……&#xa;你可以关闭上报，不过龙猫就不知道你遇到了什么 Bug 了……&#13;SPCL 不会上传或收集任何个人信息，包括上报的东西里面也没有！&#xa;详情：https://github.com/Meloong-Git/PCL/discussions/7036" />
                     <Grid Height="35" Grid.Row="7" Grid.ColumnSpan="5" Margin="0,12,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />

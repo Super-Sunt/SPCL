@@ -71,7 +71,7 @@ Public Module ModMinecraft
                     End If
                 Next
             Catch ex As Exception
-                Logger.Warn(ex, "扫描 PCL 所在文件夹中是否有 MC 文件夹失败")
+                Logger.Warn(ex, "扫描 SPCL 所在文件夹中是否有 MC 文件夹失败")
             End Try
 
             '扫描官启文件夹
@@ -149,15 +149,15 @@ Public Module ModMinecraft
             Dim ResultJson As String =
 "{
     ""profiles"":  {
-        ""PCL"": {
+        ""SPCL"": {
             ""icon"": ""Grass"",
-            ""name"": ""PCL"",
+            ""name"": ""SPCL"",
             ""lastVersionId"": ""latest-release"",
             ""type"": ""latest-release"",
             ""lastUsed"": """ & Date.Now.ToString("yyyy'-'MM'-'dd") & "T" & Date.Now.ToString("HH':'mm':'ss") & ".0000Z""
         }
     },
-    ""selectedProfile"": ""PCL"",
+    ""selectedProfile"": ""SPCL"",
     ""clientToken"": ""23323323323323323323323323323333""
 }"
             FileUtils.Write(Folder & "launcher_profiles.json", ResultJson, encoding:=Encoding.GetEncoding("GB18030"))
@@ -328,7 +328,7 @@ Public Module ModMinecraft
                 Try
                     Dim Result = New McVersion(Name, JsonObject, JsonVersion)
                     _Version = Result
-                    If Result.VanillaName = "Unknown" Then Info = "PCL 无法识别该版本的 MC 版本号"
+                    If Result.VanillaName = "Unknown" Then Info = "SPCL 无法识别该版本的 MC 版本号"
                 Catch ex As Exception
                     Logger.Warn(ex, "识别 Minecraft 版本时出错")
                     _Version = New McVersion("Unknown")

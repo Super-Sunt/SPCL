@@ -342,7 +342,7 @@ Public Module ModJava
                     Dim RecommendedComponent As String =
                         If(Target.Is(Of McInstance), GetJavaRequirement(Instance).RecommendedComponent, Nothing)
                     Logger.Info($"自动选择以下范围的 Java：{Range} {RecommendedComponent}")
-                    If Range.IsEmpty Then Throw New Exception("Java 版本需求存在冲突，导致没有任何可能适配的 Java，请查看 PCL 的日志了解详细信息！")
+                    If Range.IsEmpty Then Throw New Exception("Java 版本需求存在冲突，导致没有任何可能适配的 Java，请查看 SPCL 的日志了解详细信息！")
 
                     '搜索 Java
                     Dim SelectJavaFromJavaList =
@@ -448,7 +448,7 @@ Public Module ModJava
                                     Description = $"版本低于 {Range.Upper} 的 Java"
                                 End If
                             End If
-                            MyMsgBox($"PCL 没能找到合适的 Java。{vbCrLf}请在网上搜索并手动安装{Description}， 然后在【设置 → 启动 → 高级选项 → Java 列表】中导入它。", "需要手动安装 Java")
+                            MyMsgBox($"SPCL 没能找到合适的 Java。{vbCrLf}请在网上搜索并手动安装{Description}， 然后在【设置 → 启动 → 高级选项 → Java 列表】中导入它。", "需要手动安装 Java")
                             Return Nothing
                         End If
 

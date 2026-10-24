@@ -267,7 +267,7 @@ Public Class FormMain
         '输出更新日志
         RunInNewThread(
         Sub()
-            If MyMsgBox(Content, "PCL 已更新至" & VersionDisplay, "确定", "完整更新日志") = 2 Then
+            If MyMsgBox(Content, "SPCL 已更新至" & VersionDisplay, "确定", "完整更新日志") = 2 Then
                 OpenWebsite("https://meloong.com/afd/a/LTCat?tab=feed")
             End If
         End Sub, "UpdateLog Output")

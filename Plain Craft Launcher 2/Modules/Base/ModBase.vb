@@ -583,7 +583,7 @@ Public Module ModBase
             FileUtils.Delete(TestFilePath)
             Return True
         Catch ex As Exception
-            Logger.Warn(ex, $"没有对文件夹 {Folder} 的权限，请尝试以管理员权限运行 PCL")
+            Logger.Warn(ex, $"没有对文件夹 {Folder} 的权限，请尝试以管理员权限运行 SPCL")
             Return False
         End Try
     End Function
@@ -1002,7 +1002,7 @@ Public Module ModBase
         Catch ex As Exception
             Logger.Warn(ex, $"无法打开网页（{Url}）")
             ClipboardSet(Url, False)
-            MyMsgBox("可能由于浏览器未正确配置，PCL 无法为你打开网页。" & vbCrLf & "网址已经复制到剪贴板，若有需要可以手动粘贴访问。" & vbCrLf &
+            MyMsgBox("可能由于浏览器未正确配置，SPCL 无法为你打开网页。" & vbCrLf & "网址已经复制到剪贴板，若有需要可以手动粘贴访问。" & vbCrLf &
                      $"网址：{Url}", "无法打开网页")
         End Try
     End Sub
