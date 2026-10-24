@@ -895,6 +895,41 @@ Public Module ModBase
     End Function
 
     ''' <summary>
+    ''' 启动进程并等待其结束，返回标准输出与标准错误的内容。
+    ''' 超时会强制结束进程并抛出 TimeoutException。
+    ''' </summary>
+    Public Function StartProcessAndGetOutput(FileName As String, Optional Arguments As String = "", Optional Timeout As Integer = 5000,
+                                             Optional TextEncoding As Text.Encoding = Nothing, Optional PrintLog As Boolean = True) As String
+        If TextEncoding Is Nothing Then TextEncoding = Text.Encoding.UTF8
+        Dim StartInfo As New ProcessStartInfo With {
+            .FileName = FileName,
+            .Arguments = Arguments,
+            .UseShellExecute = False,
+            .CreateNoWindow = True,
+            .RedirectStandardOutput = True,
+            .RedirectStandardError = True,
+            .StandardOutputEncoding = TextEncoding,
+            .StandardErrorEncoding = TextEncoding
+        }
+        Dim Result As New Text.StringBuilder
+        Using ProcessObject As Process = StartProcess(StartInfo)
+            Dim OutputTask = ProcessObject.StandardOutput.ReadToEndAsync()
+            Dim ErrorTask = ProcessObject.StandardError.ReadToEndAsync()
+            If Not ProcessObject.WaitForExit(Timeout) Then
+                Try
+                    ProcessObject.Kill()
+                Catch
+                End Try
+                Throw New TimeoutException($"进程执行超时（{Timeout}ms）：{FileName} {Arguments}")
+            End If
+            Result.Append(OutputTask.GetAwaiter().GetResult())
+            Result.Append(ErrorTask.GetAwaiter().GetResult())
+        End Using
+        If PrintLog Then Logger.Info($"进程输出（{FileName}）：{vbCrLf}{Result}")
+        Return Result.ToString
+    End Function
+
+    ''' <summary>
     ''' 在新的工作线程中执行代码。
     ''' </summary>
     Public Function RunInNewThread(Action As Action, Optional Name As String = Nothing, Optional Priority As ThreadPriority = ThreadPriority.Normal) As Thread

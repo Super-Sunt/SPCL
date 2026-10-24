@@ -828,7 +828,7 @@ Public Class PageLinkMain
     Private RefreshPeerLoader As New LoaderTask(Of Integer, List(Of Peer))("EasyTier CLI", AddressOf RefreshPeer)
     Private Sub RefreshPeer()
         Try
-            Dim CliResult = "" 'StartProcessAndGetOutput(PathEasyTier & "联机模块 CLI.exe", $"-o json -p 127.0.0.1:{RPCPort} peer", 2000, Encoding:=Encoding.UTF8, PrintLog:=False)
+            Dim CliResult As String = StartProcessAndGetOutput(PathEasyTier & "联机模块 CLI.exe", $"-o json -p 127.0.0.1:{RPCPort} peer", 2000, TextEncoding:=Encoding.UTF8, PrintLog:=False)
             '解析
             If Not CliResult.Contains("lat_ms") Then Throw New Exception("CLI 调用失败：" & vbCrLf & CliResult)
             If GetUuid() Mod If(ModeDebug, 23, 103) = 0 Then Logger.Info($"CLI 输出抽样：{vbCrLf}{CliResult}")
@@ -973,7 +973,7 @@ Public Class PageLinkMain
                         HintFinish.Text = "你或者房主的网络环境不太好，"
                     End If
                     If String.IsNullOrWhiteSpace(Settings.Get(Of String)("LinkCustomPeer")) Then
-                        HintFinish.Text &= "正使用社区节点进行中继。"
+                        HintFinish.Text &= "正通过自建中继进行中继。"
                     Else
                         HintFinish.Text &= "正通过自定义节点进行中继。"
                     End If
