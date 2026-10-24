@@ -359,5 +359,9 @@ SPCL\
 ### 复核结果
 - 窗口标题 `SPCL　`；`%TEMP%\SPCL\` 生效、`%TEMP%\PCL\` 不再创建；`PCL_SingletonMutex` 空闲、`SPCL_SingletonMutex` 被占用；启动与关于页无权限/XAML 错误。
 
+### 追加修正（顶栏 Logo）
+- 提交 `73e5c5a`：顶栏默认 Logo 原本是用矢量路径绘制的 “PCL” 字形（`ShapeTitleLogo`）。改为“默认”模式显示文本 `SPCL`，并把 `UiLogoText` 默认值设为 `SPCL`、缺失时回退 `SPCL`。矢量 `PCL` 不再显示；设置页仍保留 无/默认/文本/图片 四种模式，其中“默认”即 `SPCL` 文本。
+- 已通过实际窗口截图确认顶栏显示 `SPCL`，并重新打包 `dist\SPCL-2.14.0.0-win64.zip`（仅含 `SPCL.exe`、`LICENCE`、`README.txt`）。
+
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。
