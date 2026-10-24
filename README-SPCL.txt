@@ -1,12 +1,14 @@
-SPCL 1.0（基于 PCL 2.14.0.0 改编）
+SPCL 1.1（基于 PCL 2.14.0.0 改编）
 
 本软件改编自 Plain Craft Launcher（PCL）2.14.0.0 源码，非 PCL 官方作品。
 
 当前版本：
-- 版本号：SPCL 1.0（改编自 PCL 2.14.0.0）
+- 版本号：SPCL 1.1（改编自 PCL 2.14.0.0）
 - 仅改动身份层：名称、图标、关于页、路径隔离、启动提示
 - 保留 PCL 的启动、下载、实例、Mod、离线/第三方登录等功能
-- 支持微软正版登录（设备代码流，需要自备 Azure 应用 Client ID）
+- 微软正版登录功能保留，但**当前无法登录成功**：新建的 Azure 应用必须通过微软审核才能调用
+  Minecraft 服务，否则第 4 步会返回 403 Invalid app registration；申请入口 https://aka.ms/mce-reviewappid
+- 离线登录与第三方皮肤站登录正常可用
 - 不包含 CurseForge API 调用、自动更新
 
 使用要求：

@@ -47,7 +47,7 @@
             <local:MyCard Margin="0,0,0,15" Title="关于 SPCL">
                 <StackPanel Margin="25,40,19,20">
                     <TextBlock TextWrapping="Wrap" LineHeight="22"
-                               Text="SPCL 1.0 是基于 Plain Craft Launcher 2.14.0.0 的第三方个人修改版，非 PCL 官方作品。支持离线登录、第三方皮肤站登录，以及微软正版登录（需自备 Azure 应用 Client ID）。不包含 CurseForge API 调用与自动更新。原项目：https://github.com/Meloong-Git/PCL" />
+                               Text="SPCL 1.1 是基于 Plain Craft Launcher 2.14.0.0 的第三方个人修改版，非 PCL 官方作品。支持离线登录与第三方皮肤站登录；微软正版登录功能已保留，但新建的 Azure 应用需要微软审核授权，目前无法完成登录（详见 README 的「微软正版登录」一节）。不包含 CurseForge API 调用与自动更新。原项目：https://github.com/Meloong-Git/PCL" />
                 </StackPanel>
             </local:MyCard>
             <local:MyCard Margin="0,0,0,15" Title="法律信息" IsSwapped="True" CanSwap="True">

@@ -6,7 +6,7 @@ Public Module ModBase
 #Region "声明"
 
     '下列版本信息由更新器自动修改
-    Public Const VersionBaseName As String = "1.0" '对外显示版本名
+    Public Const VersionBaseName As String = "1.1" '对外显示版本名
     Public Const CommitHash As String = "" 'Commit Hash，由 GitHub Workflow 自动替换
     '注意：VersionCode 是内部构建号，参与升级/降级迁移逻辑，不要跟着显示版本一起改小。
 #If RELEASE Then

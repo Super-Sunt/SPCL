@@ -385,5 +385,12 @@ SPCL\
 - 已把该情形加入代码提示：`ModLaunch.MsLoginStep4` 检测到 403 且响应含 `Invalid app registration` 时，弹出「需要申请应用授权」并可直接打开申请表单，不再误报为「当前 IP 的登录尝试异常」。
 - 结论（对发布的影响）：正版登录**不能保证开箱可用**，README 已注明「每人自行注册 + 必须提交审核表单」，并建议等待审核期间使用离线登录或第三方皮肤站登录。
 
+### 版本 1.1（2026-10-24）
+- `VersionBaseName` 由 `1.0` 升到 `1.1`，程序集 `AssemblyVersion`/`AssemblyFileVersion` 升到 `1.1.0.0`；`VersionCode` 仍保持 411/412。
+- 决策：**正版登录功能保留但不再扩展**（受微软应用审核限制，见上）；文档层面把「为什么登录不成功」写清楚。
+- README 新增状态说明块与「版本历史」；关于页文案同步为 1.1 并注明正版登录当前不可用的原因。
+- 复核离线登录与第三方皮肤站（authlib-injector）登录：相关代码自 1.0 起未改动；接口连通性复测通过（LittleSkin `api/yggdrasil` 200，authlib-injector 官方源与 BMCLAPI 镜像 200）。
+- 发布物：`dist\SPCL-1.1-win64.zip`（`SPCL.exe` + `LICENCE` + `README.txt`），GitHub Release `v1.1`。
+
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。
