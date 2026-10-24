@@ -1,6 +1,6 @@
 # SPCL
 
-SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Java 版启动器，当前版本 **1.1**。
+SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Java 版启动器，当前版本 **1.2**。
 
 > 本项目是第三方个人改编版，非 PCL 官方作品，与 PCL 官方及其开发者无隶属关系。
 
@@ -11,6 +11,7 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 - 实例管理、Mod 与整合包管理、资源下载与 Modrinth 搜索
 - 离线登录、第三方皮肤站（authlib-injector）登录
 - 微软正版登录（功能保留，但受微软应用审核限制，**当前无法登录成功**，详见下文）
+- 联机：基于自建 EasyTier 中继的虚拟局域网，跨网络与朋友联机（需自备中继服务器）
 - 崩溃分析与日志导出
 - 单文件 exe，内嵌全部依赖，免安装
 
@@ -18,7 +19,7 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 
 ## 下载
 
-前往 [Releases](https://github.com/Super-Sunt/SPCL/releases) 下载最新的 `SPCL-1.1-win64.zip`，解压后直接运行 `SPCL.exe`。
+前往 [Releases](https://github.com/Super-Sunt/SPCL/releases) 下载最新的 `SPCL-1.2-win64.zip`，解压后直接运行 `SPCL.exe`。
 
 ## 运行要求
 
@@ -27,6 +28,24 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 - 至少一个可用的 Java 运行时（启动器也会自动检测或下载）
 
 建议单独放在一个目录，不要覆盖其它启动器的安装目录。
+
+## 联机
+
+SPCL 内置基于 [EasyTier](https://github.com/EasyTier/EasyTier) 的联机功能：房主与朋友都连接同一个中继节点，由它帮助互相打洞、打洞失败时转发流量，从而让不同网络下的玩家进入同一个虚拟局域网。
+
+**需要你自备中继服务器**（发布包刻意不内置中继地址，避免他人占用你的带宽）：
+
+1. 按 [tools/relay/README.md](tools/relay/README.md) 在一台公网服务器上部署 EasyTier 中继（1 核 1G 足够，放行 **TCP+UDP 11010**）
+2. 你和朋友都打开 **设置 → 联机 → 中继服务器**，填写同一个地址，例如 `tcp://你的服务器IP:11010`
+3. 房主：**联机 → 创建房间** → 在游戏里「对局域网开放」→ 把游戏显示的端口号填进启动器 → 把生成的邀请码发给朋友
+4. 加入者：**联机 → 加入房间** → 粘贴邀请码 → 完成后把页面显示的 `localhost:端口` 填进 Minecraft 的「直接连接」
+
+注意事项：
+
+- **创建虚拟网卡需要管理员权限**：请右键 `SPCL.exe` → **以管理员身份运行**，否则会提示创建网卡失败
+- 联机模块（EasyTier v2.6.4）已随发布包内置，无需联网下载
+- 邀请码只在 SPCL 之间通用，与官方 PCL、HMCL 的房间不互通
+- 中继地址只发给朋友，不要提交到公开仓库
 
 ## 微软正版登录
 
@@ -98,6 +117,7 @@ docs/                     设计与实施文档
 
 ## 版本历史
 
+- **1.2**：新增联机功能（自建 EasyTier 中继，联机模块随发布包内置，顶部导航放显「联机」）；恢复开源版被删除的 CLI 调用辅助函数与节点查询；其余功能与 1.1 相同
 - **1.1**：正版登录补充准确的应用审核提示（`Invalid app registration`），README 写明正版登录当前不可用的原因；复核离线与第三方皮肤站登录正常；其余功能与 1.0 相同
 - **1.0**：首个版本，基于 PCL 2.14.0.0 的身份层改造（名称、图标、关于页、路径隔离），保留启动、下载、实例、Mod、离线与第三方登录
 

@@ -1,0 +1,17 @@
+[Unit]
+Description=SPCL EasyTier Relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/easytier/easytier-core \
+  --relay-network-whitelist S* \
+  --machine-id spcl-relay --hostname spcl-relay \
+  -l tcp://0.0.0.0:11010 -l udp://0.0.0.0:11010
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

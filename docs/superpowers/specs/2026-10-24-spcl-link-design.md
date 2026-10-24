@@ -153,3 +153,14 @@ ExecStart=/opt/easytier/server/easytier-core \
 ## 11. 合规
 
 随发布包分发 EasyTier 二进制需附其开源许可证（Apache-2.0），打包时复制 `LICENSE` 到 `联机模块\LICENSE.txt`。
+
+## 12. 实测记录（2026-10-24）
+
+| 项 | 结果 |
+| --- | --- |
+| EasyTier v2.6.4 参数兼容 | `easytier-core --help` 覆盖 PCL 拼接的全部参数（`--network-name`/`--network-secret`/`--listeners`/`--rpc-portal`/`--private-mode`/`-i`/`-d`/`-p`/`--hostname`/`--tcp-whitelist`/`--udp-whitelist`/`--port-forward`/`--latency-first`/`--relay-network-whitelist`），无需改动拼接逻辑 |
+| CLI JSON 格式 | `联机模块 CLI.exe -o json -p 127.0.0.1:<port> peer` 返回含 `lat_ms`/`cost`/`nat_type`/`hostname`/`ipv4`/`id`/`version` 的 JSON，与 `Peer` 解析逻辑匹配 |
+| 中继节点 | 本地以 `--relay-network-whitelist S*` 启动中继成功，端口 11010 TCP/UDP 正常监听 |
+| **开源版缺失实现（已补回）** | `ModBase.StartProcessAndGetOutput` 在开源快照中被整体删除，导致 `RefreshPeer` 的 CLI 调用被注释、连接检测永远失败。已补回该辅助函数并恢复 CLI 调用，否则联机无法完成连接 |
+| **管理员权限** | EasyTier 在 Windows 创建虚拟网卡（wintun）必须由管理员运行；非管理员时日志出现 `tun device error: Failed to create adapter` 与防火墙 `拒绝访问`。1.2 采用「报错时给出以管理员身份运行的提示」，一键提权重启留作后续优化（PCL 有单实例互斥，提权重启需要先释放互斥再启动，风险较高） |
+| 端到端联机 | 受 DSH 沙箱受限令牌限制，无法在本机完成真实会话的 TUN 建卡；需在用户桌面会话中以管理员身份实测（步骤：配置中继地址 → 创建房间 → 加入者用邀请码加入） |

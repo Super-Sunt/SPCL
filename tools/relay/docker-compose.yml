@@ -1,0 +1,13 @@
+services:
+  easytier-relay:
+    image: easytier/easytier:latest
+    container_name: spcl-relay
+    restart: always
+    network_mode: host
+    command: [
+      "--relay-network-whitelist", "S*",
+      "--machine-id", "spcl-relay",
+      "--hostname", "spcl-relay",
+      "-l", "tcp://0.0.0.0:11010",
+      "-l", "udp://0.0.0.0:11010"
+    ]
