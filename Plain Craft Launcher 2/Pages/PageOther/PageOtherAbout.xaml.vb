@@ -28,7 +28,7 @@ Public Class PageOtherAbout
         GeneratePotatoCode()
     End Sub
     Private Sub BtnAboutUpdate_Click(sender As Object, e As MouseButtonEventArgs) Handles BtnAboutUpdate.Click
-        UpdateCheckByButton()
+        Hint("个人修改版暂不提供自动更新。", HintType.Blue)
     End Sub
 
 End Class
