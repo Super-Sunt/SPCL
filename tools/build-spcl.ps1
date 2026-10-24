@@ -53,12 +53,18 @@ if ($LASTEXITCODE -ne 0) {
     throw "构建失败：主 VB 工程（退出码 $LASTEXITCODE）"
 }
 
-Write-Host "构建完成：Plain Craft Launcher 2\bin\Plain Craft Launcher 2.exe"
+Write-Host "构建完成，产物位于 Plain Craft Launcher 2\bin\"
 
 # DSH 沙箱工作区里的文件会继承 Low 完整性标签，导致 ShellExecute/双击启动被系统拒绝。
 # 构建后把 exe 显式设回 Medium，保证本机双击可运行。
-$exe = "Plain Craft Launcher 2\bin\Plain Craft Launcher 2.exe"
-if (Test-Path $exe) {
-    icacls $exe /setintegritylevel Medium | Out-Null
-    Write-Host "已将 $exe 的完整性级别设为 Medium"
+# M1 阶段程序集名是 Plain Craft Launcher 2，M2 改名为 SPCL，两个名字都检查。
+$exeCandidates = @(
+    "Plain Craft Launcher 2\bin\SPCL.exe",
+    "Plain Craft Launcher 2\bin\Plain Craft Launcher 2.exe"
+)
+foreach ($exe in $exeCandidates) {
+    if (Test-Path $exe) {
+        icacls $exe /setintegritylevel Medium | Out-Null
+        Write-Host "已将 $exe 的完整性级别设为 Medium"
+    }
 }
