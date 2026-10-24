@@ -349,3 +349,5 @@ dist/
 # SPCL: 官方 PCL 二进制与补丁不进公开仓库
 最新正式版/
 patches/
+
+tools/link-module/
