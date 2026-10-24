@@ -332,3 +332,32 @@ SPCL\
 - 自建更新通道：替换 `ModSecret.vb` 中的更新桩。
 - 首页/启动画面定制：进入路线 C。
 - 公开仓库与合规改名：M3。
+
+## 16. 执行记录（2026-10-24）
+
+实际执行与原始设计的偏差和结果。
+
+### 构建
+- NuGet 在 `danger-full-access` 下正常；`workspace-write` 下会 TLS 失败。
+- `/p:LangVersion=12.0` 不能全局传（主 VB 工程会当成 VB 12.0 并报 `BC36716`）。已固化为 `tools/build-spcl.ps1`：先只给三个 C# 项目加 12.0，再用 `/p:BuildProjectReferences=false` 构建主 VB 工程。
+- DSH 工作区里的 exe 带 `Low` 完整性标签，ShellExecute/双击会被拒；脚本构建后自动 `icacls /setintegritylevel Medium`，发布包用 zip 解压到普通目录同样避开。
+- 完整功能验收（离线登录 + 启动游戏）在正常用户会话完成；自动化窗口检查用计划任务绕开沙箱令牌。
+
+### M1
+- 提交：`ce17228` 名称 → `b8ae8c4` 图标 → `f72aae4` 关于页 → `a9fc305` 隔离/清理 → `2832bac` 打包文档；标签 `m1-spcl-identity`。
+- 关于页按用户要求精简：只保留“关于”（龙腾猫跃 + `SPCL 作者` + `SPCL 版本`）和“关于 SPCL”；删除“特别鸣谢”“赞助者”；保留“法律信息”“许可与版权声明”（发布合规需要）。`CopyIdentify` 保留为无 `Handles` 的公共方法，供设置页调用。
+- 主界面用户可见的 `PCL` 文案统一改为 `SPCL`（提示、对话框、错误信息、导出选项、Tooltip、`launcher_profiles.json` 名称、`{launcher_name}` 等）；保留文件/路径名（`PCL\`、`PCL.ini`、`PCL2`）、URL、环境变量、原作者署名与赞助说明。
+- 追加提交：`2bce430` 关于页精简、`4e84961` UI 文案统一。
+
+### M2
+- 提交 `6b29672`，标签 `m2-spcl-exe`。
+- `AssemblyName` 改为 `SPCL`；替换 5 处 `Plain Craft Launcher 2;component` 和 10 处 `assembly=Plain Craft Launcher 2`（关于页精简后，数量比原计划少）。
+- 整合包导出与旧更新文件清理路径改为 `SPCL.exe`。
+- 产物 `Plain Craft Launcher 2\bin\SPCL.exe`，ProductName `SPCL`，进程名 `SPCL`。
+- 分发包 `dist\SPCL-2.14.0.0-win64.zip`（`SPCL.exe` + `LICENCE` + `README.txt`），已做解压即用验证。
+
+### 复核结果
+- 窗口标题 `SPCL　`；`%TEMP%\SPCL\` 生效、`%TEMP%\PCL\` 不再创建；`PCL_SingletonMutex` 空闲、`SPCL_SingletonMutex` 被占用；启动与关于页无权限/XAML 错误。
+
+### 发布前提醒
+- 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。

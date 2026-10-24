@@ -894,11 +894,11 @@ Remove-Item tools\replace_pack_uri.py
 Expected:
 
 ```
-component: 16
+component: 5
 assembly: 10
 ```
 
-（M1 前是 15；M1 的关于页新增了 1 个 `PCL2.png` 引用，所以 M2 时是 16。）
+（实际执行时关于页已精简：特别鸣谢与赞助者卡片被删除，所以 component 引用是 5 处。计划最初写的 15/16 是精简前的估算。）
 
 脚本只写入确实发生替换的文件，并用 `newline=""` 保留源码的 LF 行尾，避免出现“全文件换行”噪声 diff。
 
@@ -967,7 +967,7 @@ git add "Plain Craft Launcher 2\Plain Craft Launcher 2.vbproj" `
 git commit -m "feat: rename launcher assembly and executable to SPCL"
 ```
 
-注意：`git add "Plain Craft Launcher 2"` 会把 16 处 component URI 和 10 处 `assembly=` 修改一并加入；提交前用 `git status` 确认没有把构建产物加入。
+注意：`git add "Plain Craft Launcher 2"` 会把 5 处 component URI 和 10 处 `assembly=` 修改一并加入；提交前用 `git status` 确认没有把构建产物加入。
 
 - [ ] **Step 7.9: 打标签**
 
