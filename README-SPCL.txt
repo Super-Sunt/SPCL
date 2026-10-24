@@ -14,8 +14,9 @@ SPCL 1.0（基于 PCL 2.14.0.0 改编）
 - 请单独放在一个目录，不要覆盖官方 PCL
 - 首次启动会在 exe 同级创建 PCL 数据目录
 - 如果你之前用官方 PCL 设置过离线皮肤，可把 %APPDATA%\PCL\CustomSkin.png 复制到 %APPDATA%\SPCL\
-- 微软正版登录：先在 Azure 门户注册应用（帐户类型选“仅个人 Microsoft 帐户”，并允许公共客户端流），
+- 微软正版登录：本发布包**不内置 Client ID**，每位使用者都需要自行注册一个 Azure 应用（免费），
   再把应用程序(客户端) ID 填到 设置 → 启动 → 高级选项 → 微软登录 Client ID，或设置环境变量 PCL_MS_CLIENT_ID
+  （应用需选“仅个人 Microsoft 帐户”，并允许公共客户端流）
 
 项目与下载：
 - https://github.com/Super-Sunt/SPCL

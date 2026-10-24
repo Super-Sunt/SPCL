@@ -379,6 +379,8 @@ SPCL\
 - 未配置或 Client ID 无效时给出明确提示；设备代码流不需要客户端密码。
 - 注册 Azure 应用要点：受支持的帐户类型选「仅个人 Microsoft 帐户」，并在「身份验证」中把「允许公共客户端流」设为「是」。
 - 踩坑记录：VB 源码里不能出现智能引号 `“ ”`，VB 编译器会把它规范化成普通引号、导致字符串提前结束（源码中应使用 `vbLQ`/`vbRQ` 或「」）。
+- 明确界限：**不在代码或发布包中内置 Client ID**。作者只在本机设置项中填写自己的 ID；其他使用者需自行注册 Azure 应用（README 已注明）。
+- 实测提示：仅“个人 Microsoft 帐户”类型的应用直接调 `/consumers` 设备代码接口会报 `AADSTS70002: The client application must be marked as 'mobile.'`，需在「身份验证」中添加「移动和桌面应用程序」平台（勾选 `https://login.microsoftonline.com/common/oauth2/nativeclient`）并把「允许公共客户端流」设为「是」（或在清单里设 `allowPublicClient: true`）。
 
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。

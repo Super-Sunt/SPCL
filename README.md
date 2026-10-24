@@ -32,6 +32,8 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 
 正版登录使用微软官方的设备代码流（device code flow）：启动器申请设备代码 → 你在浏览器输入并登录 → 启动器轮询拿到令牌 → 依次通过 Xbox Live、XSTS、Minecraft Services 完成验证。整条链路已经内置，但需要一个**你自己的 Azure 应用**提供 Client ID（PCL 官方版自带，本改编版不含）。
 
+> **本项目不提供共享的 Client ID。** 每位使用者都必须自己注册上面的应用。应用注册本身免费，微软也不按登录次数收费，但一个被大量使用的公共 Client ID 可能触发风控或限流，所以作者的构建中不会内置 Client ID（只在本机设置里填写）。从 GitHub 下载后请按下面的步骤自行注册。
+
 注册 Azure 应用（免费，约两分钟）：
 
 1. 打开 [Azure 门户](https://portal.azure.com) → **Microsoft Entra ID** → **应用注册** → **新注册**
