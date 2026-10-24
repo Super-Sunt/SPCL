@@ -47,7 +47,7 @@ Public Module ModBase
     ''' <summary>
     ''' 程序的缓存文件夹路径，以 \ 结尾。
     ''' </summary>
-    Public PathTemp As String = PathUtils.AddSlashSuffix(If(Settings.Get(Of String)("SystemSystemCache") = "", Path.GetTempPath() & "PCL\", Settings.Get(Of String)("SystemSystemCache")).Replace("/", "\"))
+    Public PathTemp As String = PathUtils.AddSlashSuffix(If(Settings.Get(Of String)("SystemSystemCache") = "", Path.GetTempPath() & "SPCL\", Settings.Get(Of String)("SystemSystemCache")).Replace("/", "\"))
     ''' <summary>
     ''' 当前程序的语言。
     ''' </summary>
