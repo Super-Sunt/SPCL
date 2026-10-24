@@ -311,16 +311,19 @@ Expected: 构建成功，无新增错误。
 
 ```powershell
 $exe = "Plain Craft Launcher 2\bin\Plain Craft Launcher 2.exe"
-(Get-Item $exe).VersionInfo | Select-Object ProductName, FileDescription, FileVersion
+(Get-Item $exe).VersionInfo | Select-Object ProductName, FileDescription, Comments, FileVersion
 ```
 
 Expected:
 
 ```
 ProductName       : SPCL
-FileDescription   : Minecraft 启动器（基于 PCL 的第三方个人修改版）
+FileDescription   : SPCL 启动器
+Comments          : Minecraft 启动器（基于 PCL 的第三方个人修改版）
 FileVersion       : 2.14.0.0
 ```
+
+（`FileDescription` 来自 `AssemblyTitle`，`Comments` 来自 `AssemblyDescription`，别把两者搞混。）
 
 - [ ] **Step 2.9: 验证窗口标题与单实例**
 

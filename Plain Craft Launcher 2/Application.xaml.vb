@@ -152,10 +152,10 @@ RetryCacheCheck:
         If BuildType = BuildTypes.Debug Then Return
         Try
             Dim MutexCreatedNew As Boolean
-            PclMutex = New Mutex(True, "PCL_SingletonMutex", MutexCreatedNew)
+            PclMutex = New Mutex(True, "SPCL_SingletonMutex", MutexCreatedNew)
             If MutexCreatedNew Then Return
-            Logger.Warn("已有一个 PCL 实例正在运行")
-            '等待已有的 PCL 退出
+            Logger.Warn("已有一个 SPCL 实例正在运行")
+            '等待已有的 SPCL 退出
             If e.Args.Length > 0 AndAlso e.Args(0) = "--wait" Then
                 Try
                     If PclMutex.WaitOne(10000) Then Return '等待至多 10 秒
@@ -163,9 +163,8 @@ RetryCacheCheck:
                     Return '已有实例异常退出，继续启动
                 End Try
             End If
-            '将已有的 PCL 窗口拖出来
-            Dim WindowHwnd As IntPtr = FindWindow(Nothing, "Plain Craft Launcher　")
-            If WindowHwnd = IntPtr.Zero Then WindowHwnd = FindWindow(Nothing, "Plain Craft Launcher 2　")
+            '将已有的 SPCL 窗口拖出来
+            Dim WindowHwnd As IntPtr = FindWindow(Nothing, "SPCL　")
             If WindowHwnd <> IntPtr.Zero Then ShowWindowToTop(WindowHwnd)
             '播放提示音并退出
             Beep()
