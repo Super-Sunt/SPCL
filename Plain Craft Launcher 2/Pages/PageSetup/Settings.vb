@@ -112,6 +112,7 @@ Public Class Settings
         New Setting("LinkLastAutoJoinInviteCode", "", Source:=Sources.Registry),
         New Setting("LinkLatencyMode", 0, Source:=Sources.Registry),
         New Setting("LinkCustomPeer", ""),
+        New Setting("LinkRelayServer", ""),
         New Setting("LinkEasyTierVersion", -1, Source:=Sources.Registry),
         New Setting("ToolHelpChinese", True, Source:=Sources.Registry),
         New Setting("ToolDownloadThread", 63, Source:=Sources.Registry),
@@ -315,10 +316,7 @@ Public Class Settings
         Dim Value = Entry.GetCache(Instance)
         If Value IsNot Nothing Then Return Value
         '对部分设置强制赋值
-        Static ForcedSettings As New Dictionary(Of String, Object) From {
-            {"UiHiddenPageLink", True},
-            {"UiHiddenSetupLink", True}
-        }
+        Static ForcedSettings As New Dictionary(Of String, Object)
         Dim ForcedSetting As Object = Nothing
         If ForcedSettings.TryGetValue(Key, ForcedSetting) Then
             Entry.Set(ForcedSetting, Instance)

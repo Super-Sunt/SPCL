@@ -34,20 +34,19 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="28" />
                         <RowDefinition Height="15" />
-                        <RowDefinition Height="35" />
+                        <RowDefinition Height="28" />
+                        <RowDefinition Height="15" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="自定义节点" Margin="0,0,25,0" />
-                    <local:MyTextBox x:Name="TextCustomPeer" local:SettingService.Key="LinkCustomPeer" Grid.Column="1" MaxHeight="28" 
-                        ToolTip="覆盖 SPCL 所选择的节点，仅连接此处填写的节点。&#xa;如果你自己搭建了 EasyTier 节点，你可以用这个设置让 SPCL 连接它。&#xa;&#xa;使用逗号分隔多个节点，例如：&#xa;tcp://public.easytier.cn:11010,tcp://public2.easytier.cn:54321&#xa;&#xa;房主和加入者必须连接到至少一个相同节点，才能互相连上。" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Left">
-                        <local:MyButton MinWidth="140" Padding="13,5" Margin="0,0,20,0" HorizontalAlignment="Left"
-                            Text=" 光荣地贡献节点！" ColorType="Highlight"
-                            ToolTip="联机功能全靠社区的各位无私贡献的节点才能存在！&#xa;如果你有空闲的高带宽服务器，欢迎搭建一个共享节点，人人为我，我为人人嘛……" 
-                            local:CustomEventService.EventType="打开网页" local:CustomEventService.EventData="https://shimo.im/docs/qKPttVvXKqPD8YDC#anchor-Dupo" />
-                        <local:MyButton MinWidth="140" Padding="13,5" Margin="0,0,20,0" HorizontalAlignment="Left"
-                            Text="节点状态"
-                            local:CustomEventService.EventType="打开网页" local:CustomEventService.EventData="https://uptime.easytier.cn/" />
-                    </StackPanel>
+                    <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="中继服务器" Margin="0,0,25,0" />
+                    <local:MyTextBox x:Name="TextRelayServer" local:SettingService.Key="LinkRelayServer" Grid.Row="0" Grid.Column="1" MaxHeight="28"
+                        HintText="例如 tcp://1.2.3.4:11010"
+                        ToolTip="你自己搭建的 EasyTier 中继节点地址。&#xa;房主与加入者必须填写同一个地址，才能互相连上。&#xa;&#xa;部署方法见仓库的 tools/relay/README.md。" />
+                    <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" Text="自定义节点" Margin="0,0,25,0" />
+                    <local:MyTextBox x:Name="TextCustomPeer" local:SettingService.Key="LinkCustomPeer" Grid.Row="2" Grid.Column="1" MaxHeight="28"
+                        ToolTip="高级选项：覆盖上面的中继服务器设置，仅连接此处填写的节点。&#xa;如果你自己搭建了多个 EasyTier 节点，可以在这里用逗号分隔填写。" />
+                    <local:MyHint Grid.Row="4" Grid.ColumnSpan="2" Margin="0,5,0,0" Theme="Blue"
+                        Text="中继服务器需要同时放行 TCP 与 UDP 端口（默认 11010）；只开 TCP 会失去 P2P 打洞能力。" />
                 </Grid>
             </local:MyCard>
         </StackPanel>
