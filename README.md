@@ -32,7 +32,7 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 需要 Visual Studio 2022（含 .NET 桌面开发工作负载）和 .NET Framework 4.8 目标包。
 
 ```powershell
-git clone --recurse-submodules https://github.com/Super-Sunt/SPCL.git
+git clone https://github.com/Super-Sunt/SPCL.git
 cd SPCL
 dotnet restore PCLCS\PCLCS.csproj
 pwsh -File tools\build-spcl.ps1
@@ -51,10 +51,14 @@ pwsh -File tools\build-spcl.ps1
 ```
 Plain Craft Launcher 2/   VB.NET + WPF 主工程（.NET Framework 4.8）
 PCLCS/                    C# 启动、Java 检测与版本工具库
-MeloongCore/              子模块：通用库（Shared netstandard2.0 + Wpf net48）
+MeloongCore/              内置通用库（Shared netstandard2.0 + Wpf net48，Apache-2.0）
 tools/                    构建脚本与图标生成脚本
 docs/                     设计与实施文档
 ```
+
+## 第三方组件
+
+- MeloongCore（Apache-2.0）：位于 `MeloongCore/`，许可证见 `MeloongCore/LICENSE.txt`
 
 ## 许可
 

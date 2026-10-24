@@ -3,7 +3,7 @@
 > 状态：已评审（2026-10-23）
 > 日期：2026-10-23
 > 基线：PCL 源码快照 2.14.0.0（VersionCode 412）
-> 依赖：MeloongCore 固定提交 `98157d65c7627721c816c02e8be96ac4fe61d615`
+> 依赖：MeloongCore（Apache-2.0，源码已并入仓库 `MeloongCore/`）
 > 目标产物：Windows 单 exe 的 SPCL 启动器（个人/小圈子自用，后续可能发布）
 
 ## 1. 背景
@@ -82,7 +82,7 @@ Plain Craft Launcher 2.sln
 │  ├─ My Project\                 AssemblyInfo、Resources.resx（内嵌 DLL）
 │  └─ Resources\                  Help.zip、第三方 DLL、jar
 ├─ PCLCS\                         C# 库（net48）：Java、版本 JSON、启动参数
-└─ MeloongCore\                   子模块：Shared（netstandard2.0）+ Wpf（net48）
+└─ MeloongCore\                   内置通用库：Shared（netstandard2.0）+ Wpf（net48，Apache-2.0）
 ```
 
 关键数据路径：
@@ -105,8 +105,7 @@ Plain Craft Launcher 2.sln
 
 ### 7.1 步骤
 
-1. 确认 MeloongCore 在固定提交：
-   `git -C MeloongCore log -1 --format=%H` 应为 `98157d65c7627721c816c02e8be96ac4fe61d615`。
+1. 确认 MeloongCore 源码已内置：`MeloongCore\Shared\MeloongCore.csproj` 与 `MeloongCore\Wpf\MeloongCore.Wpf.csproj` 存在（已不使用子模块）。
 2. 还原 NuGet：
    `dotnet restore PCLCS\PCLCS.csproj`
 3. 构建主工程（Release）：
@@ -368,6 +367,11 @@ SPCL\
 - `VersionCode` 保持 411/412 不变：它参与 `FormMain` 的升级/降级迁移判断，改小会被误判为降级并触发迁移。
 - 关于页只显示 `SPCL 正式版 1.0`（去掉内部构建号）；“关于 SPCL”说明和 `README-SPCL.txt` 都写明“基于 PCL 2.14.0.0 改编”。
 - 网络 UA 由 `PCL2/...` 改为 `SPCL/...`；`${launcher_version}` 改为显示版本 `1.0`。
+
+### 追加修正（MeloongCore 并入仓库）
+- MeloongCore 是构建必需依赖（主工程与 PCLCS 都有 `ProjectReference`，并导入其命名空间），不能删除。
+- 为了不再在公开仓库里出现指向原作者仓库的子模块链接，已把 `MeloongCore\Shared`、`MeloongCore\Wpf` 源码与 `LICENSE.txt`（Apache-2.0）直接并入仓库，并删除 `.gitmodules` 与子模块 gitlink。
+- 克隆不再需要 `--recurse-submodules`；`tools/build-spcl.ps1` 路径不变，已验证构建通过。
 
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。
