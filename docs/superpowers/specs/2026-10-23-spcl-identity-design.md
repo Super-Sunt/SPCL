@@ -66,8 +66,9 @@
 
 - 需要 Visual Studio 2022（含 .NET 桌面开发工作负载）和 .NET Framework 4.8 目标包。
 - 需要能访问 NuGet（`api.nuget.org`）还原 MeloongCore/PCLCS 的包。
-- 本机 VS 17.11.5 自带 Roslyn 4.11，不支持项目里的 `LangVersion 13.0`，会报 `CS1617`。依赖代码中未发现 C# 13 专用语法，可用 `/p:LangVersion=12.0` 全局覆盖；更稳妥的做法是升级到 VS 17.12+。
-- 当前会话的 DSH 沙箱中 Schannel 无法完成 TLS 握手（`SEC_E_NO_CREDENTIALS`），`dotnet restore` 无法联网。这是环境限制，不是工程问题；M0 需在正常桌面网络下执行，或后续提权后重试。
+- 本机 VS 17.11.5 自带 Roslyn 4.11，不支持 C# 项目的 `LangVersion 13.0`，会报 `CS1617`。**不能用 `/p:LangVersion=12.0` 全局覆盖**：该属性会同时作用于 VB 主工程，而 VB 12.0 是 2013 年语法版本，会让内插字符串、元组等全部报 `BC36716`。正确做法是先单独构建三个 C# 项目（MeloongCore、MeloongCore.Wpf、PCLCS）并只对它们加 `LangVersion=12.0`，再用 `/p:BuildProjectReferences=false` 构建主 VB 工程；或者升级到 VS 17.12+。
+- DSH 沙箱工作区内创建的 exe 会继承 `Low` 完整性标签。`Low` 标签会让 ShellExecute/双击启动被系统拒绝（报“操作已被用户取消”），但用 `UseShellExecute=false` 直接 CreateProcess 仍可启动。这是沙箱产物属性，不是源码问题；打包成 zip 让用户解压到普通目录，或对 exe 执行 `icacls <exe> /setintegritylevel Medium`，即可解决。
+- `workspace-write` 模式下 Schannel 会导致 NuGet TLS 失败（`SEC_E_NO_CREDENTIALS`）；`danger-full-access` 模式下 `dotnet restore` 正常。
 
 ## 5. 现有架构
 
@@ -250,10 +251,18 @@ M0 失败时先修环境/依赖，不靠改业务代码绕过。只有确认是�
 
 ```powershell
 dotnet restore PCLCS\PCLCS.csproj
-msbuild "Plain Craft Launcher 2\Plain Craft Launcher 2.vbproj" /p:Configuration=Release /p:LangVersion=12.0
+
+# 1) 只对 C# 依赖加 LangVersion=12.0（绕开 VS 17.11 Roslyn 不支持 C# 13）
+msbuild MeloongCore\Shared\MeloongCore.csproj /p:Configuration=Release /p:LangVersion=12.0
+msbuild MeloongCore\Wpf\MeloongCore.Wpf.csproj /p:Configuration=Release /p:LangVersion=12.0
+msbuild PCLCS\PCLCS.csproj /p:Configuration=Release /p:LangVersion=12.0
+
+# 2) 主 VB 工程不加 LangVersion，并跳过重复构建依赖
+msbuild "Plain Craft Launcher 2\Plain Craft Launcher 2.vbproj" /p:Configuration=Release /p:BuildProjectReferences=false
 ```
 
-- `LangVersion=12.0` 用于绕开 VS 17.11 的 Roslyn 4.11 不支持 C# 13 的问题；升级到 VS 17.12+ 后可去掉。
+- 主 VB 工程绝不能收到 `LangVersion=12.0`，否则会被当成 VB 12.0（2013 语法）而报 `BC36716`。
+- 升级到 VS 17.12+ 后，C# 依赖可去掉 `LangVersion=12.0`。
 - Debug 仅用于开发自测；Release 用于分发。
 - 若 `msbuild` 不在 PATH，使用 VS 2022 的 Developer PowerShell，或直接调用 VS 目录下的 `MSBuild.exe`。
 
@@ -269,6 +278,7 @@ SPCL\
 ```
 
 - 不做安装器、不做自动更新。
+- 在 DSH 沙箱工作区里构建出的 exe 会带 `Low` 完整性标签，直接双击可能报“操作已被用户取消”。发布时用 zip 分发，用户解压到普通目录后即为 Medium；如需保留裸 exe，打包时执行 `icacls <exe> /setintegritylevel Medium`。
 - exe 未签名，Windows SmartScreen 可能提示，属预期。
 - 目标机器只需 .NET Framework 4.8（Windows 10 1809+ / Windows 11 默认包含）。
 
