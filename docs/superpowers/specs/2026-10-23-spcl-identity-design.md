@@ -381,6 +381,9 @@ SPCL\
 - 踩坑记录：VB 源码里不能出现智能引号 `“ ”`，VB 编译器会把它规范化成普通引号、导致字符串提前结束（源码中应使用 `vbLQ`/`vbRQ` 或「」）。
 - 明确界限：**不在代码或发布包中内置 Client ID**。作者只在本机设置项中填写自己的 ID；其他使用者需自行注册 Azure 应用（README 已注明）。
 - 实测提示：仅“个人 Microsoft 帐户”类型的应用直接调 `/consumers` 设备代码接口会报 `AADSTS70002: The client application must be marked as 'mobile.'`，需在「身份验证」中添加「移动和桌面应用程序」平台（勾选 `https://login.microsoftonline.com/common/oauth2/nativeclient`）并把「允许公共客户端流」设为「是」（或在清单里设 `allowPublicClient: true`）。
+- **关键限制（实测确认）**：新建的 Azure 应用即使配置正确，微软登录第 4 步 `api.minecraftservices.com/authentication/login_with_xbox` 仍会返回 `403 {"errorMessage":"Invalid app registration"}`，因为该应用没有 Minecraft API 权限。按 Minecraft Wiki 与官方支持文档，必须在 <https://aka.ms/mce-reviewappid>（跳转到 Microsoft Forms 问卷）提交客户端 ID 申请放行，通过后才能完成正版登录；个人/爱好者应用通常需要参与 Xbox 开发者计划才可能获批。
+- 已把该情形加入代码提示：`ModLaunch.MsLoginStep4` 检测到 403 且响应含 `Invalid app registration` 时，弹出「需要申请应用授权」并可直接打开申请表单，不再误报为「当前 IP 的登录尝试异常」。
+- 结论（对发布的影响）：正版登录**不能保证开箱可用**，README 已注明「每人自行注册 + 必须提交审核表单」，并建议等待审核期间使用离线登录或第三方皮肤站登录。
 
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。

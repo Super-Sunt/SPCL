@@ -32,14 +32,15 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 
 正版登录使用微软官方的设备代码流（device code flow）：启动器申请设备代码 → 你在浏览器输入并登录 → 启动器轮询拿到令牌 → 依次通过 Xbox Live、XSTS、Minecraft Services 完成验证。整条链路已经内置，但需要一个**你自己的 Azure 应用**提供 Client ID（PCL 官方版自带，本改编版不含）。
 
-> **本项目不提供共享的 Client ID。** 每位使用者都必须自己注册上面的应用。应用注册本身免费，微软也不按登录次数收费，但一个被大量使用的公共 Client ID 可能触发风控或限流，所以作者的构建中不会内置 Client ID（只在本机设置里填写）。从 GitHub 下载后请按下面的步骤自行注册。
+> **本项目不提供共享的 Client ID。** 每位使用者都需要自己注册应用；而且**新建的 Azure 应用默认没有 Minecraft API 权限**，必须再向微软提交审核表单（[aka.ms/mce-reviewappid](https://aka.ms/mce-reviewappid)）并通过，才能完成正版登录 —— 否则第 4 步会返回 `403 Invalid app registration`。应用注册免费、微软也不按登录次数收费，但审核只对符合条件的应用放行，所以作者的构建里不会内置 Client ID。
 
 注册 Azure 应用（免费，约两分钟）：
 
 1. 打开 [Azure 门户](https://portal.azure.com) → **Microsoft Entra ID** → **应用注册** → **新注册**
 2. 名称随意（如 `SPCL`）；受支持的帐户类型选 **仅个人 Microsoft 帐户**
 3. 注册完成后复制 **应用程序(客户端) ID**
-4. 进入该应用的 **身份验证** 页 → 拉到底部 **高级设置** → 把 **允许公共客户端流** 设为 **是** → 保存
+4. 进入该应用的 **身份验证 / Authentication** 页 → **添加平台** → **移动和桌面应用程序**（勾选 `https://login.microsoftonline.com/common/oauth2/nativeclient`），并把 **允许公共客户端流** 设为 **是** → 保存
+5. **（必需）申请 Minecraft API 权限**：打开 [aka.ms/mce-reviewappid](https://aka.ms/mce-reviewappid)，按表单要求填写你的客户端 ID 并提交，等待微软审核放行
 
 然后在启动器里填写 Client ID（任选其一）：
 
@@ -48,6 +49,7 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 
 之后在主页切到「正版」并登录，按弹窗提示在浏览器输入设备代码即可。设备代码流**不需要客户端密码**。
 
+> 审核通过前，登录会在第 4 步（`login_with_xbox`）失败，启动器会提示「需要申请应用授权」并给出申请表单；等待期间可以用离线登录或第三方皮肤站登录。
 > 登录的微软账号必须已购买 Minecraft，启动器会检查游戏所有权。
 
 ## 构建

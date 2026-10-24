@@ -1041,6 +1041,17 @@ Retry:
                 Throw New Exception("$登录尝试太过频繁，请等待几分钟后再试！")
             ElseIf ex.StatusCode = HttpStatusCode.Forbidden Then
                 Logger.Warn(ex, "微软登录第 4 步汇报 403")
+                If ex.Response IsNot Nothing AndAlso ex.Response.Contains("Invalid app registration") Then
+                    '新注册的 Azure 应用默认没有 Minecraft API 权限，需要在微软表单中申请审核
+                    Logger.Warn(ex, "该 Azure 应用尚未获得 Minecraft 服务授权")
+                    If MyMsgBox("你的 Azure 应用还没有获得 Minecraft 服务的使用授权，因此正版登录无法完成。" & vbCrLf & vbCrLf &
+                                "新建的 Azure 应用需要先向微软提交申请，通过审核后才能调用 Minecraft 接口。是否现在打开申请表单？" & vbCrLf & vbCrLf &
+                                "在等待审核期间，可以改用离线登录或第三方皮肤站登录。",
+                                "需要申请应用授权", "打开申请表单", "取消", IsWarn:=True) = 1 Then
+                        OpenWebsite("https://aka.ms/mce-reviewappid")
+                    End If
+                    Throw New OperationCanceledException
+                End If
                 Throw New Exception("$当前 IP 的登录尝试异常。" & vbCrLf & "如果你使用了 VPN 或加速器，请把它们关掉或更换节点后再试！")
             ElseIf ex.StatusCode = HttpStatusCode.ServiceUnavailable Then
                 Logger.Warn(ex, "微软登录第 4 步汇报 503")
