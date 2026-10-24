@@ -238,6 +238,8 @@
                         <RowDefinition Height="9" />
                         <RowDefinition Height="28" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="9" />
+                        <RowDefinition Height="28" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,25,0">
@@ -288,7 +290,10 @@
                         <local:MyCheckBox Height="28" Text="使用高性能显卡" local:SettingService.Key="LaunchAdvanceGraphicCard" ToolTip="自动在 Windows 设置 → 系统 → 屏幕 → 显示卡 中将 SPCL 和 Java 改为使用高性能显卡。&#xa;如果同时有集成显卡和独立显卡，这能确保 MC 使用独立显卡进行渲染，以大幅提高帧率。" />
                         <local:MyCheckBox Height="28" Text="在正版登录时验证 SSL 证书" local:SettingService.Key="ToolDownloadCert" ToolTip="开启验证可以提高安全性，但可能会导致正版登录失败（见 #3018）。&#xa;若登录因为 “未能为 SSL/TLS 安全通道建立信任关系” 失败，请考虑关闭此选项。" />
                     </StackPanel>
-                    <local:MyHint Text="版本独立设置中还有更多高级选项可供调整。" Margin="0,5,0,10" Theme="Blue" Grid.Row="11" Grid.ColumnSpan="2"
+                    <TextBlock Grid.Row="12" VerticalAlignment="Center" HorizontalAlignment="Left" Text="微软登录 Client ID" Margin="0,0,25,0" />
+                    <local:MyTextBox local:SettingService.Key="MsOAuthClientId" x:Name="TextMsOAuthClientId" Grid.Row="12" Grid.ColumnSpan="2" Grid.Column="1" MaxLength="100" HintText="留空则无法使用正版登录"
+                                     ToolTip="微软正版登录需要一个你自己注册的 Azure 应用（客户端 ID），设备代码流不需要客户端密码。&#xa;&#xa;注册步骤：&#xa;1. 打开 Azure 门户 → Microsoft Entra ID → 应用注册 → 新注册；&#xa;2. 受支持的帐户类型选择“仅个人 Microsoft 帐户”；&#xa;3. 在“身份验证”页把“允许公共客户端流”设为“是”；&#xa;4. 复制“应用程序(客户端) ID”填入此处。&#xa;&#xa;也可以改用环境变量 PCL_MS_CLIENT_ID。" />
+                    <local:MyHint Text="版本独立设置中还有更多高级选项可供调整。" Margin="0,5,0,10" Theme="Blue" Grid.Row="13" Grid.ColumnSpan="2"
                                   CanClose="True" RelativeSetup="HintMoreAdvancedSetup" />
                 </Grid>
             </local:MyCard>

@@ -36,7 +36,7 @@
 - 不重写启动引擎，不替换 PCLCS / MeloongCore。
 - 不做跨平台（Linux/macOS）。
 - 不重做页面布局、动画体系或交互结构。
-- 不接入微软正版登录（需要自建 Azure 应用并配置 ClientId）。
+- 微软正版登录默认不可用：开源版把 `OAuthClientId` 置空，需要自备 Azure 应用；后续已补上设置页填写入口，见 §16「追加修正（微软正版登录）」。
 - 不接入 CurseForge API（需要自行申请 API Key）；Modrinth 搜索不受影响。
 - 不实现自动更新、联网通知、赞助解锁；不新做主题切换或主题解锁。
 - 不删除 PCL 现有功能，不绕过正版购买提示和赞助提示。
@@ -158,7 +158,7 @@ M0 失败时先修环境/依赖，不靠改业务代码绕过。只有确认是�
 
 - 保留 `PageOtherAbout.xaml` 中“龙腾猫跃”为关于页第一位，保留“赞助 PCL !”按钮与链接。
 - 在 LTCat 行之后增加 SPCL 行，内容为“本软件为基于 Plain Craft Launcher 的第三方个人修改版”，附原仓库链接。
-- 在关于页补充一段“本版本不包含微软登录、CurseForge API 调用、自动更新”的说明，替代启动时被移除的开源版弹窗。
+- 在关于页补充一段说明，替代启动时被移除的开源版弹窗：支持离线登录、第三方皮肤站登录，以及微软正版登录（需自备 Azure 应用 Client ID）；不包含 CurseForge API 调用与自动更新。
 - 保留 HerobrineXia 及全部特别鸣谢，不删除任何 PCL 贡献者。
 - 关于页的“检查更新”按钮改为提示“个人修改版暂不提供自动更新”，不再调用空的更新桩。
 - 发布包附带 `LICENCE` 文件；README 中注明基于 PCL 的哪个版本、做了哪些修改。
@@ -326,7 +326,7 @@ SPCL\
 
 ## 15. 后续（不在本规格内）
 
-- 微软正版登录：注册 Azure 应用，填 `OAuthClientId`。
+- 微软正版登录：注册 Azure 应用（仅个人 Microsoft 帐户 + 允许公共客户端流），把客户端 ID 填到设置页或环境变量 `PCL_MS_CLIENT_ID`（已实现，见 §16）。
 - CurseForge 搜索：申请 API Key，填 `CurseForgeAPIKey`。
 - 自建更新通道：替换 `ModSecret.vb` 中的更新桩。
 - 首页/启动画面定制：进入路线 C。
@@ -372,6 +372,13 @@ SPCL\
 - MeloongCore 是构建必需依赖（主工程与 PCLCS 都有 `ProjectReference`，并导入其命名空间），不能删除。
 - 为了不再在公开仓库里出现指向原作者仓库的子模块链接，已把 `MeloongCore\Shared`、`MeloongCore\Wpf` 源码与 `LICENSE.txt`（Apache-2.0）直接并入仓库，并删除 `.gitmodules` 与子模块 gitlink。
 - 克隆不再需要 `--recurse-submodules`；`tools/build-spcl.ps1` 路径不变，已验证构建通过。
+
+### 追加修正（微软正版登录）
+- 微软登录链路在源码中完整保留：设备代码流 → token 轮询 → XBL → XSTS → Minecraft Services → entitlement → profile。开源版只是把 `OAuthClientId` 置空。
+- `OAuthClientId` 改为动态解析：环境变量 `PCL_MS_CLIENT_ID` → 设置 `MsOAuthClientId`；设置页（设置 → 启动 → 高级选项）新增「微软登录 Client ID」输入框。
+- 未配置或 Client ID 无效时给出明确提示；设备代码流不需要客户端密码。
+- 注册 Azure 应用要点：受支持的帐户类型选「仅个人 Microsoft 帐户」，并在「身份验证」中把「允许公共客户端流」设为「是」。
+- 踩坑记录：VB 源码里不能出现智能引号 `“ ”`，VB 编译器会把它规范化成普通引号、导致字符串提前结束（源码中应使用 `vbLQ`/`vbRQ` 或「」）。
 
 ### 发布前提醒
 - 公开发布仍需改名为 `PCL SPCL修改版` 这类以 PCL 开头的形式，并保留龙腾猫跃署名与赞助链接、开源代码、蓝色主色相、正版/赞助提示。

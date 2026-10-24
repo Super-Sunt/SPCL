@@ -885,9 +885,23 @@ LoginFinish:
         '初始请求
 Retry:
         McLaunchLog("开始微软登录步骤 1/6（原始登录）")
-        Dim PrepareJson As JObject = NetRequestByClientRetry("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", HttpMethod.Post,
-            Content:=$"client_id={OAuthClientId}&tenant=/consumers&scope=XboxLive.signin%20offline_access",
-            ContentType:="application/x-www-form-urlencoded", RequireJson:=True).DeserializeJson()
+        If String.IsNullOrWhiteSpace(OAuthClientId) Then
+            Throw New Exception("$尚未配置微软登录 Client ID，无法使用正版登录。" & vbCrLf &
+                                "请先注册一个 Azure 应用，再把「应用程序(客户端) ID」填入：设置 → 启动 → 高级选项 → 微软登录 Client ID。" & vbCrLf &
+                                "也可以改用环境变量 PCL_MS_CLIENT_ID 提供。")
+        End If
+        Dim PrepareJson As JObject
+        Try
+            PrepareJson = NetRequestByClientRetry("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", HttpMethod.Post,
+                Content:=$"client_id={OAuthClientId}&tenant=/consumers&scope=XboxLive.signin%20offline_access",
+                ContentType:="application/x-www-form-urlencoded", RequireJson:=True).DeserializeJson()
+        Catch ex As HttpRequestCodeException
+            If ex.Response.Contains("invalid_client") OrElse ex.Response.Contains("unauthorized_client") OrElse ex.Response.Contains("AADSTS7000218") Then
+                Throw New Exception("$微软登录 Client ID 无效，或该 Azure 应用未允许公共客户端流。" & vbCrLf &
+                                    "请在 Azure 应用的身份验证页把「允许公共客户端流」设为「是」，并确认账户类型支持个人 Microsoft 帐户。")
+            End If
+            Throw
+        End Try
         McLaunchLog("网页登录地址：" & PrepareJson("verification_uri").ToString)
 
         '弹窗

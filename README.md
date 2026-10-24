@@ -10,10 +10,11 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 - 内置 BMCLAPI 等镜像源，支持 Forge、Fabric、NeoForge、OptiFine、LiteLoader 等加载器
 - 实例管理、Mod 与整合包管理、资源下载与 Modrinth 搜索
 - 离线登录、第三方皮肤站（authlib-injector）登录
+- 微软正版登录（设备代码流，需要自备 Azure 应用 Client ID）
 - 崩溃分析与日志导出
 - 单文件 exe，内嵌全部依赖，免安装
 
-当前版本**不包含**：微软正版登录、CurseForge API 调用、自动更新。
+当前版本**不包含**：CurseForge API 调用、自动更新。
 
 ## 下载
 
@@ -26,6 +27,26 @@ SPCL 是一个基于 Plain Craft Launcher 2.14.0.0 源码改编的 Minecraft Jav
 - 至少一个可用的 Java 运行时（启动器也会自动检测或下载）
 
 建议单独放在一个目录，不要覆盖其它启动器的安装目录。
+
+## 微软正版登录
+
+正版登录使用微软官方的设备代码流（device code flow）：启动器申请设备代码 → 你在浏览器输入并登录 → 启动器轮询拿到令牌 → 依次通过 Xbox Live、XSTS、Minecraft Services 完成验证。整条链路已经内置，但需要一个**你自己的 Azure 应用**提供 Client ID（PCL 官方版自带，本改编版不含）。
+
+注册 Azure 应用（免费，约两分钟）：
+
+1. 打开 [Azure 门户](https://portal.azure.com) → **Microsoft Entra ID** → **应用注册** → **新注册**
+2. 名称随意（如 `SPCL`）；受支持的帐户类型选 **仅个人 Microsoft 帐户**
+3. 注册完成后复制 **应用程序(客户端) ID**
+4. 进入该应用的 **身份验证** 页 → 拉到底部 **高级设置** → 把 **允许公共客户端流** 设为 **是** → 保存
+
+然后在启动器里填写 Client ID（任选其一）：
+
+- 设置 → 启动 → 高级选项 → **微软登录 Client ID**
+- 环境变量 `PCL_MS_CLIENT_ID`
+
+之后在主页切到「正版」并登录，按弹窗提示在浏览器输入设备代码即可。设备代码流**不需要客户端密码**。
+
+> 登录的微软账号必须已购买 Minecraft，启动器会检查游戏所有权。
 
 ## 构建
 

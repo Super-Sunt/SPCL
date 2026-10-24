@@ -22,6 +22,7 @@
 - 每次运行新构建前先退出已在运行的 SPCL/PCL 实例，否则单实例逻辑会聚焦旧窗口，看不到新标题/图标。
 - 提交信息使用 `feat:` / `chore:` 前缀。
 - 注：执行后期 MeloongCore 已并入仓库（Apache-2.0）。Task 0 里的子模块步骤只记录当时的操作；重新执行时直接确认 `MeloongCore\` 源码目录存在即可，不需要 `--recurse-submodules`。
+- 注：微软正版登录后续已启用：Client ID 可在「设置 → 启动 → 高级选项 → 微软登录 Client ID」填写（或环境变量 `PCL_MS_CLIENT_ID`）。Task 4 关于页文案里的「不包含微软正版登录」已随之改成「支持，需自备 Azure 应用 Client ID」。
 
 ---
 
