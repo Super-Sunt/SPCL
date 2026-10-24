@@ -1,7 +1,6 @@
 SPCL 1.0（基于 PCL 2.14.0.0 改编）
 
 本软件改编自 Plain Craft Launcher（PCL）2.14.0.0 源码，非 PCL 官方作品。
-原项目：https://github.com/Meloong-Git/PCL
 
 当前版本：
 - 版本号：SPCL 1.0（改编自 PCL 2.14.0.0）
@@ -14,6 +13,9 @@ SPCL 1.0（基于 PCL 2.14.0.0 改编）
 - 请单独放在一个目录，不要覆盖官方 PCL
 - 首次启动会在 exe 同级创建 PCL 数据目录
 - 如果你之前用官方 PCL 设置过离线皮肤，可把 %APPDATA%\PCL\CustomSkin.png 复制到 %APPDATA%\SPCL\
+
+项目与下载：
+- https://github.com/Super-Sunt/SPCL
 
 授权：
 - 本软件继续使用 PCL 的分发有限许可，详见 LICENCE
